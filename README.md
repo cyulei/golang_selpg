@@ -1,16 +1,16 @@
-### Go版本selpg
+# Go版本selpg
 
-#### 简介
+## 简介
 该程序使用golang开发[开发Linux命令行实用程序][1]中的selpg
 
-#### 开发环境
+## 开发环境
 - CentOS7
 - go 1.9.4 linux/amd64
 
-#### 使用
-##### 下载
+## 使用
+### 下载
 > go get github.com/cyulei/Golang_selpg 
-##### 参数
+### 参数
 > selpg -s=Number -e=Number [options] [filename]
 
 
@@ -21,7 +21,7 @@
 -   -d : Determine the destination of output.
 -   [filename] : Read input from this file.
 -   If filename is not given, read input from stdin. and Ctrl+D to cut out.
-##### 示例
+### 示例
 
 > selpg -s1 -e1 -l10 test.txt
 
