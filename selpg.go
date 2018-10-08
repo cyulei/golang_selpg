@@ -10,6 +10,7 @@ import (
 	"strconv"
 )
 
+//selpg的参数
 type selpg_args struct {
 	start_page  int
 	end_page    int
@@ -19,9 +20,9 @@ type selpg_args struct {
 	page_type   int
 }
 
-var sa selpg_args
-var progname string
-var argcount int
+var sa selpg_args   //当前输入的参数
+var progname string //程序名
+var argcount int    //参数个数
 
 func Usage() {
 	fmt.Println("\nUsage of selpg.")
@@ -46,6 +47,7 @@ func process_args(args []string) {
 		Usage()
 		os.Exit(1)
 	}
+	//提取开始页数
 	sp, _ := strconv.Atoi(args[1][2:])
 	if sp < 1 {
 		fmt.Fprintf(os.Stderr, "%s: invalid start page %d\n", progname, sp)
@@ -59,6 +61,7 @@ func process_args(args []string) {
 		Usage()
 		os.Exit(1)
 	}
+	//提取结束页数
 	ep, _ := strconv.Atoi(args[2][2:])
 	if ep < 1 || ep < sp {
 		fmt.Fprintf(os.Stderr, "%s: invalid end page %d\n", progname, ep)
@@ -75,6 +78,7 @@ func process_args(args []string) {
 		}
 		switch args[argindex][1] {
 		case 'l':
+			//获取一页的长度
 			pl, _ := strconv.Atoi(args[argindex][2:])
 			if pl < 1 {
 				fmt.Fprintf(os.Stderr, "%s: invalid page length %d\n", progname, pl)
@@ -119,6 +123,7 @@ func process_input() {
 		cmd = exec.Command("bash", "-c", sa.dest)
 		cmd_in, _ = cmd.StdinPipe()
 		cmd_out, _ = cmd.StdoutPipe()
+		//执行设定的命令
 		cmd.Start()
 	}
 	if sa.in_filename != "" {
@@ -152,14 +157,20 @@ func process_input() {
 		}
 		if sa.dest != "" {
 			cmd_in.Close()
-			cmdBytes, _ := ioutil.ReadAll(cmd_out)
-			cmd.Wait()
+			cmdBytes, err := ioutil.ReadAll(cmd_out)
+			if err != nil {
+				fmt.Println(err)
+			}
 			fmt.Print(string(cmdBytes))
+			//等待command退出
+			cmd.Wait()
 		}
 	} else {
+		//从标准输入读取内容
 		ns := bufio.NewScanner(os.Stdin)
 		count := 0
 		out := ""
+
 		for ns.Scan() {
 			line := ns.Text()
 			line += "\n"
@@ -173,9 +184,13 @@ func process_input() {
 		} else {
 			fmt.Fprint(cmd_in, out)
 			cmd_in.Close()
-			cmdBytes, _ := ioutil.ReadAll(cmd_out)
-			cmd.Wait()
+			cmdBytes, err := ioutil.ReadAll(cmd_out)
+			if err != nil {
+				fmt.Println(err)
+			}
 			fmt.Print(string(cmdBytes))
+			//等待command退出
+			cmd.Wait()
 		}
 	}
 }
@@ -186,7 +201,7 @@ func main() {
 	sa.end_page = 1
 	sa.in_filename = ""
 	sa.dest = ""
-	sa.page_len = 20
+	sa.page_len = 20 //默认20行一页
 	sa.page_type = 'l'
 	argcount = len(args)
 	process_args(args)
