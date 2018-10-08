@@ -132,7 +132,8 @@ func process_input() {
 			fmt.Println(err)
 			os.Exit(1)
 		}
-		count := 0
+		line_count := 1
+		page_count := 1
 		fin := bufio.NewReader(inf)
 		for {
 			//读取输入文件中的一行数据
@@ -144,7 +145,7 @@ func process_input() {
 			if err == io.EOF {
 				break
 			}
-			if count/sa.page_len >= sa.start_page-1 && count/sa.page_len <= sa.end_page-1 {
+			if page_count >= sa.start_page && page_count <= sa.end_page {
 				if sa.dest == "" {
 					//打印到屏幕
 					fmt.Println(string(line))
@@ -153,7 +154,17 @@ func process_input() {
 					fmt.Fprintln(cmd_in, string(line))
 				}
 			}
-			count++
+			line_count++
+			if sa.page_type == 'l' {
+				if line_count > sa.page_len {
+					line_count = 1
+					page_count++
+				}
+			} else {
+				if string(line) == "\\f" {
+					page_count++
+				}
+			}
 		}
 		if sa.dest != "" {
 			cmd_in.Close()
@@ -168,16 +179,27 @@ func process_input() {
 	} else {
 		//从标准输入读取内容
 		ns := bufio.NewScanner(os.Stdin)
-		count := 0
+		line_count := 1
+		page_count := 1
 		out := ""
 
 		for ns.Scan() {
 			line := ns.Text()
 			line += "\n"
-			if count/sa.page_len >= sa.start_page-1 && count/sa.page_len <= sa.end_page-1 {
+			if page_count >= sa.start_page && page_count <= sa.end_page {
 				out += line
 			}
-			count++
+			line_count++
+			if sa.page_type == 'l' {
+				if line_count > sa.page_len {
+					line_count = 1
+					page_count++
+				}
+			} else {
+				if string(line) == "\\f" {
+					page_count++
+				}
+			}
 		}
 		if sa.dest == "" {
 			fmt.Print(out)
