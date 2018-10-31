@@ -111,7 +111,7 @@ This is the line 20
 
 > selpg -s1 -e1 -f test.txt
 
-> 假定页由换页符界定，第1页被打印到屏幕
+> 假定页由换页符界定，第1页被打印到屏幕（因为测试文档中没有换页符，所以文档中所有内容打印出）
 
 ```
 This is the line 1
@@ -134,6 +134,16 @@ This is the line 17
 This is the line 18
 This is the line 19
 This is the line 20
+This is the line 21
+This is the line 22
+This is the line 23
+This is the line 24
+This is the line 25
+This is the line 26
+This is the line 27
+This is the line 28
+This is the line 29
+This is the line 30
 ```
 
 > selpg -s1 -e1 -l5 -dcat test.txt

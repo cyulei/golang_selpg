@@ -161,7 +161,7 @@ func process_input() {
 					page_count++
 				}
 			} else {
-				if string(line) == "\\f" {
+				if string(line) == "\f" {
 					page_count++
 				}
 			}
@@ -196,7 +196,7 @@ func process_input() {
 					page_count++
 				}
 			} else {
-				if string(line) == "\\f" {
+				if string(line) == "\f" {
 					page_count++
 				}
 			}
